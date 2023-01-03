@@ -24,8 +24,12 @@ navigator.mediaDevices
       });
     });
 
-    socket.on("user_connected", (userid) => {
-      connectToNewUser(userid, stream);
+    socket.on("user-connected", (userid) => {
+      setTimeout(()=>{
+
+      connectToNewUser(userid,stream)
+      },1000)
+      
     });
 
   })
@@ -40,8 +44,23 @@ navigator.mediaDevices
 
 myPeer.on("open", (id) => {
   console.log(id);
-  socket.emit("join-room", roomid, id);
+   socket.emit("join-room", roomid, id);
 });
+
+
+
+
+
+const connectToNewUser = (userid,stream) => {
+  console.log("daz from front", userid);
+  const call = myPeer.call(userid, stream);
+  const video = document.createElement("video");
+
+  call.on('stream', userVideoStream => {
+    addVideoStream(video, userVideoStream)
+  });
+};
+
 
 const addVideoStream = (video, stream) => {
   video.srcObject = stream;
@@ -50,13 +69,4 @@ const addVideoStream = (video, stream) => {
   });
 
   videoGrid.append(video);
-};
-
-const connectToNewUser = (userid, stream) => {
-  console.log("daz from front", userid);
-  const call = myPeer.call(userid, stream);
-  const video = document.createElement("video");
-  call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream);
-  });
 };

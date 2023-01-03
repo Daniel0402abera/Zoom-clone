@@ -39,6 +39,7 @@ io.on('connection', (socket) => {
         console.log('Daz Joined',roomid);
         socket.join(roomid);
         socket.to(roomid).emit('user-connected',userid);
+        // socket.broadcast.to(roomid).emit("user-connected", userid);
         
     })
 
