@@ -40,6 +40,11 @@ io.on('connection', (socket) => {
         socket.join(roomid);
         socket.to(roomid).emit('user-connected',userid);
         // socket.broadcast.to(roomid).emit("user-connected", userid);
+        // socket.to(roomid).emit("user-disconnected",userid);
+
+        socket.on("disconnect", () => {
+          socket.to(roomid).emit("user_disconnected", userid);
+        });
         
     })
 

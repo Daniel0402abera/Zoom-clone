@@ -5,6 +5,8 @@ const myPeer = new Peer(undefined, {
   port: "3000",
 });
 
+const peers ={};
+
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 navigator.mediaDevices
@@ -47,6 +49,20 @@ myPeer.on("open", (id) => {
    socket.emit("join-room", roomid, id);
 });
 
+// socket.on('user-disconnected', (userid) => {
+  
+//   if(peers[userid]){
+// peers[userid].close();
+//   } 
+// });
+
+
+socket.on("user_disconnected", (userid) => {
+  if (peers[userid]) {
+    peers[userid].close();
+  }
+});
+
 
 
 
@@ -59,6 +75,12 @@ const connectToNewUser = (userid,stream) => {
   call.on('stream', userVideoStream => {
     addVideoStream(video, userVideoStream)
   });
+
+  call.on("close", () => {
+    video.remove();
+  });
+  peers[userid] = call;
+  console.log(peers);
 };
 
 
